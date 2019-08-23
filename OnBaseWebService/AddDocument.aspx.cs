@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.Helpers;
 using System.Configuration;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace UCDavis.StudentAffairs.OnBaseWebService
 {
@@ -18,7 +18,7 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
             Response.Clear();
             Response.ContentType = "application/json;charset=utf-8";
             Response.ContentEncoding = Encoding.UTF8;
-            Response.Write(Json.Encode(ServiceWrapper.AddDocument(Request)));
+            Response.Write(JsonConvert.SerializeObject(ServiceWrapper.AddDocument(Request)));
             Response.End();
         }
     }

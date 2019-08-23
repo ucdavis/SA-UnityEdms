@@ -15,4 +15,4 @@ Required config file values:
 &lt;/connectionStrings&gt;
 </pre>
 
-The wrapper only supports Oracle DB backend.Make sure that the database username and password you specify have write access to the logging tables in the UCDEDMS schema.
+The wrapper only supports SQL Server backend.Make sure that the database username and password you specify have write access to the logging tables.
