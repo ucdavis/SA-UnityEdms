@@ -1082,7 +1082,7 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
             using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
-                const string query = "select SessionID from ActiveSessions where UserName=:aUserName and Url=:aUrl";
+                const string query = "select SessionID from ActiveSessions where UserName=@aUserName and Url=@aUrl";
                 using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
                     lCommand.Parameters.AddWithValue("aUserName", aUsername);
@@ -1105,7 +1105,7 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
             using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
-                const string query = "delete from ActiveSessions where UserName=:aUserName and Url=:aUrl";
+                const string query = "delete from ActiveSessions where UserName=@aUserName and Url=@aUrl";
                 using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
                     lCommand.Parameters.AddWithValue("aUserName", aUsername);
@@ -1119,7 +1119,7 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
             using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
-                const string query = "insert into ActiveSessions(Username, Url, SessionId) Values(:aUserName, :aUrl, :sessionid)";
+                const string query = "insert into ActiveSessions(Username, Url, SessionId) Values(@aUserName, @aUrl, @sessionid)";
                 using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
                     lCommand.Parameters.AddWithValue("aUserName", aUsername);
@@ -1135,7 +1135,7 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
             {
                 lConnection.Open();
                 const string query = "insert into SIS_EDMS_AUDIT(dept_user,actual_user, timestamp, dept_request_ip, user_request_ip, docid, action,description,applicationid,appspecificid) " +
-                    "values(:dept_user, :actual_user, :aTimeStamp, :dept_request_ip, :user_request_ip, :docid, :action, :description, :applicationid, :appspecificid)";
+                    "values(@dept_user, @actual_user, @aTimeStamp, @dept_request_ip, @user_request_ip, @docid, @action, @description, @applicationid, @appspecificid)";
 
                 using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
