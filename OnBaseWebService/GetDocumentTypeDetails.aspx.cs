@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Text;
-using System.Web.Helpers;
 
 namespace UCDavis.StudentAffairs.OnBaseWebService
 {
@@ -11,7 +11,7 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
             Response.Clear();
             Response.ContentType = "application/json;charset=utf-8";
             Response.ContentEncoding = Encoding.UTF8;
-            Response.Write(Json.Encode(ServiceWrapper.GetDocumentTypeDetails(Request)));
+            Response.Write(JsonConvert.SerializeObject(ServiceWrapper.GetDocumentTypeDetails(Request)));
             Response.End();
         }
     }

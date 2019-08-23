@@ -1,18 +1,11 @@
 ﻿using Hyland.Unity;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Helpers;
 using System.Runtime.Serialization;
-using System.Collections.ObjectModel;
-//using System.Data.OracleClient;
-using Oracle.DataAccess.Client;
-using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.Data.SqlClient;
 
 namespace UCDavis.StudentAffairs.OnBaseWebService
 {
@@ -1086,17 +1079,16 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
         public static bool GetSession(string aUsername, out string aSessionId)
         {
             aSessionId = null;
-            using (OracleConnection lConnection = new OracleConnection(ConnectionString))
+            using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
                 const string query = "select SessionID from ActiveSessions where UserName=:aUserName and Url=:aUrl";
-                using (OracleCommand lCommand = new OracleCommand(query, lConnection))
+                using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
-                    lCommand.BindByName = true;
-                    lCommand.Parameters.Add("aUserName", aUsername);
-                    lCommand.Parameters.Add("aUrl", Url);
+                    lCommand.Parameters.AddWithValue("aUserName", aUsername);
+                    lCommand.Parameters.AddWithValue("aUrl", Url);
 
-                    using(OracleDataReader lReader = lCommand.ExecuteReader())
+                    using(SqlDataReader lReader = lCommand.ExecuteReader())
                     {
                         if (lReader.Read())
                         {
@@ -1110,64 +1102,61 @@ namespace UCDavis.StudentAffairs.OnBaseWebService
         }
         public static void DeleteSession(string aUsername)
         {            
-            using (OracleConnection lConnection = new OracleConnection(ConnectionString))
+            using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
                 const string query = "delete from ActiveSessions where UserName=:aUserName and Url=:aUrl";
-                using (OracleCommand lCommand = new OracleCommand(query, lConnection))
+                using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
-                    lCommand.BindByName = true;
-                    lCommand.Parameters.Add("aUserName", aUsername);
-                    lCommand.Parameters.Add("aUrl", Url);
+                    lCommand.Parameters.AddWithValue("aUserName", aUsername);
+                    lCommand.Parameters.AddWithValue("aUrl", Url);
                     lCommand.ExecuteNonQuery();
                 }
             }
         }
         public static void SaveSession(string aUsername, string aSessionId)
         {            
-            using (OracleConnection lConnection = new OracleConnection(ConnectionString))
+            using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
                 const string query = "insert into ActiveSessions(Username, Url, SessionId) Values(:aUserName, :aUrl, :sessionid)";
-                using (OracleCommand lCommand = new OracleCommand(query, lConnection))
+                using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
-                    lCommand.BindByName = true;
-                    lCommand.Parameters.Add("aUserName", aUsername);
-                    lCommand.Parameters.Add("aUrl", Url);
-                    lCommand.Parameters.Add("sessionid", aSessionId);
+                    lCommand.Parameters.AddWithValue("aUserName", aUsername);
+                    lCommand.Parameters.AddWithValue("aUrl", Url);
+                    lCommand.Parameters.AddWithValue("sessionid", aSessionId);
                     lCommand.ExecuteNonQuery();
                 }
             }            
         }
         public static void LogUsage(string aApplicationLoginId, string aLoginId, string aApplicationIp, string aActualIp, long ? docid, string action, string description, DateTime aTimeStamp, int ? applicationid, string appspecificid)
         {            
-            using (OracleConnection lConnection = new OracleConnection(ConnectionString))
+            using (SqlConnection lConnection = new SqlConnection(ConnectionString))
             {
                 lConnection.Open();
                 const string query = "insert into SIS_EDMS_AUDIT(dept_user,actual_user, timestamp, dept_request_ip, user_request_ip, docid, action,description,applicationid,appspecificid) " +
                     "values(:dept_user, :actual_user, :aTimeStamp, :dept_request_ip, :user_request_ip, :docid, :action, :description, :applicationid, :appspecificid)";
 
-                using (OracleCommand lCommand = new OracleCommand(query, lConnection))
+                using (SqlCommand lCommand = new SqlCommand(query, lConnection))
                 {
-                    lCommand.BindByName = true;
-                    lCommand.Parameters.Add("dept_user", aApplicationLoginId);
-                    lCommand.Parameters.Add("actual_user", aLoginId);
-                    lCommand.Parameters.Add("aTimeStamp", aTimeStamp);
-                    lCommand.Parameters.Add("dept_request_ip", aApplicationIp);
-                    lCommand.Parameters.Add("user_request_ip", aActualIp);
+                    lCommand.Parameters.AddWithValue("dept_user", aApplicationLoginId);
+                    lCommand.Parameters.AddWithValue("actual_user", aLoginId);
+                    lCommand.Parameters.AddWithValue("aTimeStamp", aTimeStamp);
+                    lCommand.Parameters.AddWithValue("dept_request_ip", aApplicationIp);
+                    lCommand.Parameters.AddWithValue("user_request_ip", aActualIp);
                     if (docid.HasValue)
-                        lCommand.Parameters.Add("docid", docid.Value);
-                    else lCommand.Parameters.Add("docid", DBNull.Value);
-                    lCommand.Parameters.Add("action", action);
+                        lCommand.Parameters.AddWithValue("docid", docid.Value);
+                    else lCommand.Parameters.AddWithValue("docid", DBNull.Value);
+                    lCommand.Parameters.AddWithValue("action", action);
                     if (string.IsNullOrWhiteSpace(description))
-                        lCommand.Parameters.Add("description", DBNull.Value);
-                    else lCommand.Parameters.Add("description", description);
+                        lCommand.Parameters.AddWithValue("description", DBNull.Value);
+                    else lCommand.Parameters.AddWithValue("description", description);
                     if(applicationid.HasValue)
-                        lCommand.Parameters.Add("applicationid", applicationid.Value);
-                    else lCommand.Parameters.Add("applicationid", DBNull.Value);
+                        lCommand.Parameters.AddWithValue("applicationid", applicationid.Value);
+                    else lCommand.Parameters.AddWithValue("applicationid", DBNull.Value);
                     if (string.IsNullOrWhiteSpace(appspecificid))
-                        lCommand.Parameters.Add("appspecificid", DBNull.Value);
-                    else lCommand.Parameters.Add("appspecificid", appspecificid);
+                        lCommand.Parameters.AddWithValue("appspecificid", DBNull.Value);
+                    else lCommand.Parameters.AddWithValue("appspecificid", appspecificid);
 
                     lCommand.ExecuteNonQuery();
                 }
